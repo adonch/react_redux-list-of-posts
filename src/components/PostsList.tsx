@@ -1,23 +1,15 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 
 import classNames from 'classnames';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setSelectedPost } from '../features/selectedPost';
-import { fetchPosts } from '../features/posts';
 
 export const PostsList: React.FC = ({}) => {
   const posts = useAppSelector(state => state.posts.items);
   const selectedPost = useAppSelector(state => state.selectedPost.data);
-  const author = useAppSelector(state => state.author.data);
   const dispatch = useAppDispatch();
-  useEffect(() => {
-    dispatch(setSelectedPost(null));
-    if (!author) {
-      return;
-    }
-    dispatch(fetchPosts(author.id));
-  }, [author]);
+
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>

@@ -11,9 +11,8 @@ type Props = {
 
 export const UserSelector: React.FC<Props> = ({ value: selectedUser }) => {
   const dispatch = useAppDispatch();
-  const { usersList, isLoading, error } = useAppSelector(state => state.users);
+  const { usersList } = useAppSelector(state => state.users);
   const [expanded, setExpanded] = useState(false);
-
 
   useEffect(() => {
     dispatch(fetchUsers());

@@ -4,20 +4,24 @@ import { getUserPosts } from '../api/posts';
 
 type PostsState = {
   items: Post[];
-  isLoading: boolean;
+  loaded: boolean;
   hasError: string | null;
 };
 
 const initialState: PostsState = {
   items: [],
-  isLoading: false,
+  loaded: false,
   hasError: null,
 };
 
-export const fetchPosts = createAsyncThunk('posts/fetchUserPosts', async (userId: number) => {
-  const posts = await getUserPosts(userId);
-  return posts;
-});
+export const fetchPosts = createAsyncThunk(
+  'posts/fetchUserPosts',
+  async (userId: number) => {
+    const posts = await getUserPosts(userId);
+
+    return posts;
+  },
+);
 
 export const postsSlice = createSlice({
   name: 'posts',
@@ -31,17 +35,17 @@ export const postsSlice = createSlice({
     builder
 
       .addCase(fetchPosts.pending, state => {
-        state.isLoading = true;
+        state.loaded = false;
         state.hasError = null;
       })
 
       .addCase(fetchPosts.fulfilled, (state, action) => {
-        state.isLoading = false;
+        state.loaded = true;
         state.items = action.payload;
       })
 
       .addCase(fetchPosts.rejected, (state, action) => {
-        state.isLoading = false;
+        state.loaded = true;
         state.hasError = action.error.message || 'Щось пішло не так';
       });
   },

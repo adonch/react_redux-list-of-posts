@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -10,34 +10,24 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { fetchPosts } from './features/posts';
+import { fetchPosts, setUserPosts } from './features/posts';
+import { setSelectedPost } from './features/selectedPost';
 
 export const App: React.FC = () => {
-  const [loaded, setLoaded] = useState(true);
-  const [hasError, setError] = useState(false);
+  const { items, loaded, hasError } = useAppSelector(state => state.posts);
   const dispatch = useAppDispatch();
   const author = useAppSelector(state => state.author.data);
-  const posts = useAppSelector(state => state.posts.items);
   const selectedPost = useAppSelector(state => state.selectedPost.data);
 
-  // function loadUserPosts(userId: number) {
-  //   setLoaded(false);
-
-  //   getUserPosts(userId)
-  //     .then(setPosts)
-  //     .catch(() => setError(true))
-  //     .finally(() => setLoaded(true));
-  // }
-
   useEffect(() => {
-    // dispatch(setSelectedPost(null));
+    dispatch(setSelectedPost(null));
 
     if (author) {
       dispatch(fetchPosts(author.id));
     } else {
-      // setPosts([]);
+      dispatch(setUserPosts([]));
     }
-  }, [author]);
+  }, [author?.id, dispatch]);
 
   return (
     <main className="section">
@@ -63,13 +53,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {author && loaded && !hasError && items.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
+                {author && loaded && !hasError && items.length > 0 && (
                   <PostsList />
                 )}
               </div>
